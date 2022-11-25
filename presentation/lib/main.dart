@@ -1,9 +1,11 @@
+import 'package:di/di.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test_2/presentation/home/home_page.dart';
 import 'package:test_2/presentation/users/users_page.dart';
 
-void main() {
+void main() async{
+  await initDi();
   runApp(const MyApp());
 }
 

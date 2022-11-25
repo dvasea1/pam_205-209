@@ -1,18 +1,20 @@
-import 'dart:convert';
-
 import 'package:domain/users/models/small_user.dart';
+import 'package:domain/users/use_cases/get_users_use_case.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:test_2/local_database/local_database.dart';
-
-
+import 'package:get_it/get_it.dart';
 
 class UsersController extends GetxController {
   RxList<SmallUser> users = RxList();
   RxBool isLoading = false.obs;
+  var getUsersUseCase = GetIt.instance.get<GetUsersUseCase>();
 
-  late LocalDataBase localDataBase;
+  void getUsers() {
+    getUsersUseCase.call().listen((usersList) {
+      print('getUsers length: ${usersList.length}');
+      users.value = usersList;
+    });
+  }
+/*late LocalDataBase localDataBase;
 
   @override
   void onInit() {
@@ -47,26 +49,7 @@ class UsersController extends GetxController {
 
   void syncUsersApi() async {
     await Future.delayed(const Duration(seconds: 4));
-    Uri uri = Uri.parse('https://dummyapi.io/data/v1/user?limit=50&page=1');
-    var response = await http.get(
-      uri,
-      headers: {'app-id': '6112dc7c3f812e0d9b6679dd'},
-    );
 
-    if (response.statusCode == 200) {
-      UsersResponse usersResponse = UsersResponse.fromJson(jsonDecode(response.body));
-      // saveUsersToSharedPref(usersResponse.users);
-      localDataBase.insertUsers(usersResponse.users
-          .map(
-            (e) => UserTableData(
-              id: e.id,
-              firstName: e.firstName,
-              lastName: e.lastName,
-              picture: e.picture,
-            ),
-          )
-          .toList());
-    }
   }
 
   Future<List<SmallUser>> getUsersFromSharedPref() async {
@@ -83,5 +66,5 @@ class UsersController extends GetxController {
   void saveUsersToSharedPref(List<SmallUser> users) async {
     var sharedPreference = await SharedPreferences.getInstance();
     sharedPreference.setString('users', jsonEncode(users));
-  }
+  }*/
 }

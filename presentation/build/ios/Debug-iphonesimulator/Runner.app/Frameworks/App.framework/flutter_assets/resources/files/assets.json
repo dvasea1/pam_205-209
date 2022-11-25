@@ -1,0 +1,16 @@
+{
+  "user": {
+    "first_name": "John",
+    "last_name": "Doe"
+  },
+  "articles" : [
+    {
+      "title": "Pro food and sport",
+      "cover": "https://karenmangum.com/wp-content/uploads/2014/08/Sports-Nutrition-Foods.jpg"
+    },
+    {
+      "title": "Sport and life",
+      "cover": "https://static3.bigstockphoto.com/6/1/3/large1500/316933918.jpg"
+    }
+  ]
+}

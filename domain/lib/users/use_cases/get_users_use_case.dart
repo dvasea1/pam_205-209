@@ -7,9 +7,10 @@ class GetUsersUseCase {
 
   GetUsersUseCase(this.repository);
 
-  Future<List<SmallUser>> call() async  {
-    var users = await repository.getUsers();
-    //Aici prelucram users
-    return users;
+  Stream<List<SmallUser>> call() async * {
+     repository.getUsersApi().then((value) {
+       repository.insertUsersDb(value);
+     });
+    yield* repository.getUsersStream();
   }
 }
