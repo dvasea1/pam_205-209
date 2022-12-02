@@ -11,8 +11,8 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl(this.userApiDataSource, this.userDbDataSource);
 
   @override
-  Future<List<SmallUser>> getUsersApi() async {
-    var users = await userApiDataSource.getUsers();
+  Future<List<SmallUser>> getUsersApi(int page, int limit) async {
+    var users = await userApiDataSource.getUsers(page, limit);
     return users.map((e) => SmallUserMapper().mapApiDtoToModel(e)).toList();
   }
 

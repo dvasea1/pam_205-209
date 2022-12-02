@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:test_2/presentation/common_widgets/bottom_loading_widget.dart';
+import 'package:test_2/presentation/commont/bottom_loading_indicator_item.dart';
+import 'package:test_2/presentation/users/models/user_list_item.dart';
 import 'package:test_2/presentation/users/users_controller.dart';
+import 'package:test_2/presentation/users/widgets/user_widget.dart';
 import 'package:test_2/resources/text_styles.dart';
 
 class UsersPage extends StatefulWidget {
@@ -13,11 +17,24 @@ class UsersPage extends StatefulWidget {
 }
 
 class UsersPageState extends State<UsersPage> {
+  late ScrollController scrollController;
+
   @override
   void initState() {
+    scrollController = ScrollController();
+
     Get.put(UsersController());
     UsersController controller = Get.find();
     controller.getUsers();
+
+    scrollController.addListener(() {
+      var maxScroll = scrollController.position.maxScrollExtent;
+      var currentScroll = scrollController.position.pixels;
+      if (currentScroll >= maxScroll) {
+        controller.getNextPage();
+      }
+    });
+
     super.initState();
   }
 
@@ -35,44 +52,20 @@ class UsersPageState extends State<UsersPage> {
                 ),
               )
             : ListView.builder(
+                controller: scrollController,
                 itemBuilder: (context, index) {
-                  var user = controller.users[index];
-                  return SizedBox(
-                    height: 100,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Image(
-                            image: NetworkImage(user.picture ??
-                                'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                user.firstName,
-                                style: TextStyles.textStyleSignika18(),
-                              ),
-                              Text(
-                                user.lastName,
-                                style: TextStyles.textStyleSignika18(),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                  var item = controller.usersList[index];
+                  if (item is UserListItem) {
+                    return UserWidget(
+                      smallUser: item.smallUser,
+                    );
+                  } else if (item is BottomLoadingIndicatorItem) {
+                    return const BottomLoadingWidget();
+                  } else {
+                    return Container();
+                  }
                 },
-                itemCount: controller.users.length,
+                itemCount: controller.usersList.length,
               );
       }),
     );

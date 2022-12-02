@@ -6,13 +6,13 @@ import 'package:http/http.dart' as http;
 
 
 abstract class UserApiDataSource {
-  Future<List<SmallUserApiDto>> getUsers();
+  Future<List<SmallUserApiDto>> getUsers(int page, int limit);
 }
 
 class UserApiDataSourceImpl implements UserApiDataSource {
   @override
-  Future<List<SmallUserApiDto>> getUsers() async {
-    Uri uri = Uri.parse('https://dummyapi.io/data/v1/user?limit=50&page=1');
+  Future<List<SmallUserApiDto>> getUsers(int page, int limit) async {
+    Uri uri = Uri.parse('https://dummyapi.io/data/v1/user?limit=$limit&page=$page');
     var response = await http.get(
       uri,
       headers: {'app-id': '6112dc7c3f812e0d9b6679dd'},
